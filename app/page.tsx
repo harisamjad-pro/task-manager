@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+import Loader from "@/utilities/Loader";
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -20,6 +21,7 @@ interface TaskStatus {
 export default function Home() {
   const [taskStatus, setTaskStatus] = useState<TaskStatus[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [loader, setLoader] = useState(true);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -35,6 +37,9 @@ export default function Home() {
 
         setTaskStatus(statusCounts);
         setTasks(data);
+        // new
+        setLoader(false);
+        // end
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
@@ -58,12 +63,11 @@ export default function Home() {
     responsive: true,
     plugins: {
       legend: {
-        display: true,
+        display: false,
         position: "top" as const,
       },
       title: {
-        display: true,
-        text: "Task Status Overview",
+        display: false,
       },
     },
   };
@@ -77,40 +81,50 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="grid gap-6 grid-cols-2">
-        {/* Task Status Summary */}
-        <div className="grid grid-cols-3 gap-4">
-          {taskStatus.map((ts) => (
-            <div key={ts.status} className="rounded-lg border border-gray-300 px-4 py-3 grid gap-1">
-              <h2 className="text-base font-semibold">{ts.status} Tasks</h2>
-              <p className="text-2xl font-semibold">{ts.count}</p>
-            </div>
-          ))}
+      {loader ? (
+        <div className='text-center'>
+          <Loader />
         </div>
+      ) : (
+        <div className="grid gap-6 grid-cols-2">
+          {/* Task Status Summary */}
+          <div className="grid grid-cols-3 gap-4">
+            {taskStatus.map((ts) => (
+              <div key={ts.status} className="rounded-lg border border-gray-300 px-4 py-3 grid gap-1">
+                <h2 className="text-base font-semibold">{ts.status} Tasks</h2>
+                <p className="text-2xl font-semibold">{ts.count}</p>
+              </div>
+            ))}
+          </div>
 
-        {/* Latest Tasks */}
-        <div className="row-span-2 rounded-lg border border-gray-300 px-4 py-3">
-          <div className="h-fit grid gap-3">
-            <h2 className="text-2xl font-semibold text-blue-600">Latest Tasks</h2>
-            <div className="overflow-y-auto max-h-72">
-              {tasks.map((task, index) => (
-                <div
-                  key={index}
-                  className={`py-2 ${index !== tasks.length - 1 && "border-b border-b-gray-300"}`}
-                >
-                  <h3>{task.title}</h3>
-                </div>
-              ))}
+          {/* Latest Tasks */}
+          <div className="row-span-2 rounded-lg border border-gray-300 px-4 py-3">
+            <div className="h-fit grid gap-2">
+              <h2 className="text-2xl font-semibold text-blue-600">Latest Tasks</h2>
+              <div className="overflow-y-auto max-h-72">
+                {tasks.map((task, index) => (
+                  <div
+                    key={index}
+                    className={`py-2 ${index !== tasks.length - 1 && "border-b border-b-gray-300"}`}
+                  >
+                    <h3>{task.title}</h3>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Chart for Task Statuses */}
+          <div className="rounded-lg border border-gray-300 px-4 py-3 grid gap-2">
+            <h2 className="text-xl font-semibold text-blue-600">Tasks Overview</h2>
+            <div className="w-full">
+              <Bar data={chartData} options={chartOptions} />
             </div>
           </div>
         </div>
+      )}
 
-        {/* Chart for Task Statuses */}
-        <div className="rounded-lg border border-gray-300 p-4">
-          <h2 className="text-xl font-semibold text-blue-600 mb-4">Tasks Overview</h2>
-          <Bar data={chartData} options={chartOptions} />
-        </div>
-      </div>
+
     </div>
   );
 }

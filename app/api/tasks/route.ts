@@ -1,4 +1,4 @@
-"use server"; // Server component
+"use server";
 
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 export async function GET() {
     const tasks = await prisma.task.findMany({
         include: {
-            people: true, // Include related people
+            people: true,
         },
     });
     return NextResponse.json(tasks);

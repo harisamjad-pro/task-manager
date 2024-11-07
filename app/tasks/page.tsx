@@ -1,6 +1,6 @@
 "use client";
 
-import Loader from '@/components/Loader';
+import Loader from '@/utilities/Loader';
 import React, { useEffect, useRef, useState } from 'react';
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
@@ -140,7 +140,7 @@ const TodosPage = () => {
             <div className="grid gap-6">
                 <div className="grid gap-2">
                     <h1 className="text-3xl font-semibold">Manage Tasks</h1>
-                    <p className='text-gray-600'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Modi sint, maxime blanditiis architecto vel laborum accusantium harum debitis saepe ratione suscipit molestiae odio iste ullam, numquam molestias obcaecati voluptas iure?</p>
+                    <p className='text-gray-600'>Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -240,14 +240,14 @@ const TodosPage = () => {
                                         <div className='px-2'>
                                             <Link href={`/tasks/${task.id}`} className='text-blue-600 hover:text-blue-500'>{task.title}</Link>
                                         </div>
-                                        <div className='px-2'><p>{task.dueDate ? formatDueDate(task.dueDate) : 'Not set'}</p></div>
+                                        <div className='px-2'><p>{task.dueDate ? formatDueDate(task.dueDate) : '-'}</p></div>
                                         <div className="px-2">
                                             <div className={`w-fit px-3 py-1 rounded-full font-semibold text-sm ${task.status === "Open" && "bg-green-100 text-green-600"} ${task.status === "In Progress" && "bg-yellow-100 text-yellow-600"} ${task.status === "Closed" && "bg-purple-100 text-purple-600"}`}>
                                                 <p>{task.status}</p>
                                             </div>
                                         </div>
                                         <div className='px-2'>
-                                            <p>{task.people.map((p) => p.name).join(', ')}</p>
+                                            <p>{task.people.length ? task.people.map((p) => p.name).join(', ') : "-"}</p>
                                         </div>
                                         <div className='px-2'><p>{formatDateTime(task.createdAt)}</p></div>
                                         {hoveredTaskId === task.id && (
