@@ -1,14 +1,15 @@
 "use client";
 
-import Loader from '@/utilities/Loader';
+import Loader from '@/components/ui/Loader';
 import React, { useEffect, useRef, useState } from 'react';
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { AiOutlinePlus } from "react-icons/ai";
-import { IoSearchOutline } from "react-icons/io5";
+import { IoCheckmarkCircle, IoSearchOutline } from "react-icons/io5";
 import Link from 'next/link';
 import { IoMdCheckmark } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
+import Toaster from '@/components/ui/Toaster';
 
 interface Task {
     id: number;
@@ -30,6 +31,7 @@ const TodosPage = () => {
     const [loader, setLoader] = useState(true);
     const [hoveredTaskId, setHoveredTaskId] = useState<number | null>(null);
     const [createForm, setToggleForm] = useState(false);
+    const [showToaster, setShowToaster] = useState(false);
 
     const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -80,6 +82,12 @@ const TodosPage = () => {
         setEditingTodoId(null);
         fetchTodos();
         setToggleForm(false);
+        setShowToaster(true);
+        setTimeout(() => {
+            setShowToaster(false);
+        }, 4000);
+
+        // if submit successfully, then call component:
     };
 
     const handleDelete = async (id: number) => {
@@ -127,6 +135,9 @@ const TodosPage = () => {
 
     return (
         <>
+            {showToaster && (
+                <Toaster title={"Task Created Successfully"} icon={<IoCheckmarkCircle className='text-green-600 size-5' />} />
+            )}
             <div className="grid gap-6">
                 <div className="grid gap-2">
                     <h1 className="text-3xl font-semibold">Manage Tasks</h1>

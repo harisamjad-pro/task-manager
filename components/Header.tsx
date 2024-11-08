@@ -19,7 +19,7 @@ const Header = () => {
 
     return (
         // font-[var(--font-inter-sans)]
-        <header className='bg-white border-b border-gray-300'>
+        <header className='bg-white border-b border-gray-300 fixed w-full top-0'>
             <nav className='px-12 py-4 flex items-center justify-between'>
                 <ul className='flex items-center gap-6'>
                     {links.map((link) => (

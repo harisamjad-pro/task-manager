@@ -35,7 +35,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${interFont.variable} antialiased cursor-default`}>
         <Header />
-        <main className="px-12 py-12">
+        <main className="px-12 py-12 mt-16">
           {children}
         </main>
       </body>
