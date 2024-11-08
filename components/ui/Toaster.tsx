@@ -1,11 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { IoCheckmarkCircle } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Toaster = ({title, icon}) => {
-    const [isVisible, setIsVisible] = useState(true);
+interface ToasterProps {
+    title: string;
+    icon: React.ReactNode;
+}
+
+const Toaster = ({ title, icon }: ToasterProps) => {
+    const [isVisible, setIsVisible] = useState<boolean>(true);
 
     useEffect(() => {
         const timer = setTimeout(() => {
