@@ -9,6 +9,7 @@ import { IoCheckmarkCircle, IoSearchOutline } from "react-icons/io5";
 import Link from 'next/link';
 import { IoMdCheckmark } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
+import { MdCancel } from "react-icons/md";
 import Toaster from '@/components/ui/Toaster';
 
 interface Task {
@@ -31,16 +32,25 @@ const TodosPage = () => {
     const [loader, setLoader] = useState(true);
     const [hoveredTaskId, setHoveredTaskId] = useState<number | null>(null);
     const [createForm, setToggleForm] = useState(false);
-    const [showToaster, setShowToaster] = useState(false);
+    const [successToaster, setSuccessToaster] = useState(false);
+    const [failedToaster, setFailedToaster] = useState(false);
 
     const searchInputRef = useRef<HTMLInputElement>(null);
+    const successSoundRef = useRef<HTMLAudioElement | null>(null);
+    const failedSoundRef = useRef<HTMLAudioElement | null>(null);
 
     const fetchTodos = async () => {
-        setLoader(true); // Start loading
-        const res = await fetch('/api/tasks');
-        const data = await res.json();
-        setTasks(data);
-        setLoader(false);
+        setLoader(true);
+        try {
+            const res = await fetch('/api/tasks');
+            if (!res.ok) throw new Error("Failed to fetch tasks");
+            const data = await res.json();
+            setTasks(data);
+        } catch (err) {
+            console.error("Error fetching tasks:", err);
+        } finally {
+            setLoader(false);
+        }
     };
 
     const fetchPeople = async () => {
@@ -52,6 +62,9 @@ const TodosPage = () => {
     useEffect(() => {
         fetchTodos();
         fetchPeople();
+
+        successSoundRef.current = new Audio('/audio/success.mp3');
+        failedSoundRef.current = new Audio('/audio/failed.mp3');
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -61,33 +74,49 @@ const TodosPage = () => {
         const url = editingTodoId ? `/api/tasks` : '/api/tasks';
         const method = editingTodoId ? 'PUT' : 'POST';
 
-        await fetch(url, {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: editingTodoId,
-                title,
-                dueDate,
-                peopleIds,
-                status,
-            }),
-        });
+        try {
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: editingTodoId,
+                    title,
+                    dueDate,
+                    peopleIds,
+                    status,
+                }),
+            });
 
-        setTitle('');
-        setDueDate('');
-        setStatus('Open');
-        setPeopleIds([]);
-        setEditingTodoId(null);
-        fetchTodos();
-        setToggleForm(false);
-        setShowToaster(true);
-        setTimeout(() => {
-            setShowToaster(false);
-        }, 4000);
+            if (!response.ok) throw new Error('Task submission failed');
 
-        // if submit successfully, then call component:
+            setTitle('');
+            setDueDate('');
+            setStatus('Open');
+            setPeopleIds([]);
+            setEditingTodoId(null);
+            fetchTodos();
+            setToggleForm(false);
+            setSuccessToaster(true);
+
+            if (successSoundRef.current) {
+                successSoundRef.current.play();
+            }
+        } catch (error) {
+            console.log("hehehe ", error);
+            setFailedToaster(true);
+            if (failedSoundRef.current) {
+                failedSoundRef.current.play();
+            }
+        } finally {
+            setLoader(false);
+            setTimeout(() => {
+                setSuccessToaster(false);
+                setFailedToaster(false);
+            }, 6000);
+        }
+
     };
 
     const handleDelete = async (id: number) => {
@@ -135,8 +164,11 @@ const TodosPage = () => {
 
     return (
         <>
-            {showToaster && (
+            {successToaster && (
                 <Toaster title={"Task Created Successfully"} icon={<IoCheckmarkCircle className='text-green-600 size-5' />} />
+            )}
+            {failedToaster && (
+                <Toaster title={"Task Created Failed"} icon={<MdCancel className='text-red-600 size-5' />} />
             )}
             <div className="grid gap-6">
                 <div className="grid gap-2">
@@ -144,7 +176,7 @@ const TodosPage = () => {
                     <p className='text-gray-600'>Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
                 </div>
 
-                <form onSubmit={handleSubmit}>
+                {/* <form onSubmit={handleSubmit}>
                     <input
                         type="text"
                         value={title}
@@ -189,7 +221,7 @@ const TodosPage = () => {
                             Cancel Edit
                         </button>
                     )}
-                </form>
+                </form> */}
 
                 <div className="flex items-center justify-between max-sm:flex-col max-sm:gap-2">
                     <div
