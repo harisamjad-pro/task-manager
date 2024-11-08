@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from '../components/Header';
-import Footer from "@/components/Footer";
 
 const interFont = localFont({
   // src: "./fonts/InterRegular.ttf",
@@ -36,10 +35,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${interFont.variable} antialiased cursor-default`}>
         <Header />
-        <main className="px-12 py-12 min-h-[83vh]">
+        <main className="px-12 py-12">
           {children}
         </main>
-        <Footer />
       </body>
     </html>
   );
