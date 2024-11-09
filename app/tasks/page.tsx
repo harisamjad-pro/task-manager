@@ -44,6 +44,8 @@ const TasksPage = () => {
     const [deleteToaster, setDeleteToaster] = useState(false);
     const [failToaster, setFailToaster] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [result, setResult] = useState(false);
 
     // useRef
     const searchInputRef = useRef<HTMLInputElement>(null);
@@ -52,8 +54,20 @@ const TasksPage = () => {
     const successSoundRef = useRef<HTMLAudioElement | null>(null);
     const failedSoundRef = useRef<HTMLAudioElement | null>(null);
 
-    const itemsPerPage = 2;
-    const totalPages = Math.ceil(tasks.length / itemsPerPage);
+    const itemsPerPage = 6;
+
+    const filteredTasks = tasks.filter(task =>
+        task.title.toLowerCase().includes(searchQuery?.toLowerCase() || '')
+    );
+
+    const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
+
+    const currentPageTasks = filteredTasks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    const noData = filteredTasks.length === 0;
+
+    const isAtFirstPage = currentPage === 1;
+    const isAtLastPage = currentPage === totalPages;
 
     const clearToasters = () => {
         setCreateToaster(false);
@@ -203,8 +217,6 @@ const TasksPage = () => {
         { name: 'Assigned', span: 2 },
     ];
 
-    // console.log(Math.ceil(30 / 14));
-
     const toasters = [
         { condition: createToaster, title: "Tasks Created", icon: <IoCheckmarkCircle className="text-green-600 size-5" /> },
         { condition: updateToaster, title: "Tasks Updated", icon: <IoCheckmarkCircle className="text-green-600 size-5" /> },
@@ -235,7 +247,7 @@ const TasksPage = () => {
             <div className="grid gap-6">
                 <div className="grid gap-2">
                     <h1 className="text-3xl font-semibold">Manage Tasks</h1>
-                    <p className='text-gray-600'>Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
+                    <p className='text-gray-600'>List of tasks to assign and update status.</p>
                 </div>
 
                 {/* Table Start */}
@@ -251,6 +263,8 @@ const TasksPage = () => {
                             type="search"
                             ref={searchInputRef}
                             name="searchTask"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-auto max-md:w-full text-base text-black border border-gray-300 px-10 pe-4 py-2 rounded-lg focus:outline-none focus:border-blue-600"
                             placeholder="Search tasks by title"
                         />
@@ -261,7 +275,7 @@ const TasksPage = () => {
                         onClick={toggleForm}
                         disabled={false}
                         maxMdWidth={true}
-                        type="button" // Add type to ensure it’s treated as a button
+                        type="button"
                     />
                 </div>
 
@@ -342,11 +356,11 @@ const TasksPage = () => {
                                 </form>
                             </div>
                         )}
-                        {tasks.length ? (
-                            tasks.map((task, index) => (
+                        {currentPageTasks.length ? (
+                            currentPageTasks.map((task, index) => (
                                 <div
                                     key={task.id}
-                                    className={`px-2 py-3 hover:bg-gray-50 text-gray-600 ${index !== tasks.length - 1 ? 'border-b border-gray-300' : "rounded-b-lg"} items-center grid ${gridColumnsClass}`}
+                                    className={`px-2 py-3 hover:bg-gray-50 text-gray-600 ${index !== currentPageTasks.length - 1 ? 'border-b border-gray-300' : "rounded-b-lg"} items-center grid ${gridColumnsClass}`}
                                     onMouseEnter={() => setHoveredTaskId(task.id)}
                                     onMouseLeave={() => setHoveredTaskId(null)}
                                 >
@@ -372,38 +386,36 @@ const TasksPage = () => {
                             ))
                         ) : (
                             <>
-                                {loader ? (
-                                    <div className='text-center px-4 py-3'>
+                                <div className='text-center px-4 py-3'>
+                                    {loader ? (
                                         <Loader />
-                                    </div>
-                                ) : (
-                                    <div className='text-center px-4 py-3'>
+                                    ) : (
                                         <h2 className='text-gray-600 text-base font-normal'>No data</h2>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </>
                         )}
                     </div>
                 </div>
                 {!loader && (
-                    <div>
-                        <p>Page {currentPage} of {totalPages}</p>
+                    <div className='flex items-center gap-4 justify-end'>
+                        <p className='text-base text-gray-600'>Page {currentPage} of {totalPages}</p>
                         <ButtonSolid
                             title=''
                             icon={<GrPrevious />}
                             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                            disabled={currentPage === 1}
+                            disabled={isAtFirstPage || noData}
                             maxMdWidth={false}
-                            type="button" // Add type for clarity
+                            type="button"
                         />
 
                         <ButtonSolid
                             title=''
                             icon={<GrNext />}
                             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                            disabled={currentPage === totalPages}
+                            disabled={isAtLastPage || noData}
                             maxMdWidth={false}
-                            type="button" // Ensure type is set as button
+                            type="button"
                         />
                     </div>
                 )}
