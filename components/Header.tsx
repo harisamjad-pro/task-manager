@@ -24,7 +24,7 @@ const Header = () => {
 
     return (
         <header className="bg-white border-b border-gray-300 fixed w-full top-0 z-10">
-            <nav className="px-12 py-4 flex items-center justify-between">
+            <nav className="px-16 py-4 flex items-center justify-between max-lg:px-12 max-md:px-8 max-sm:px-4">
                 <ul className="flex items-center gap-6">
                     {links.map((link) => (
                         link.logo ? (

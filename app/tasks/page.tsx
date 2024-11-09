@@ -13,6 +13,10 @@ import { MdCancel } from "react-icons/md";
 import Toaster from '@/components/ui/Toaster';
 import { createTaskAPI, deleteTaskAPI, readTaskAPI, updateTaskAPI } from '@/services/api/tasks';
 import { readPeopleAPI } from '@/services/api/people';
+import { ButtonSolid } from '@/components/ui/Button';
+import { GrNext } from "react-icons/gr";
+import { GrPrevious } from "react-icons/gr";
+import { ButtonIconic } from '../../components/ui/Button';
 
 interface Tasks {
     id: number;
@@ -39,6 +43,7 @@ const TasksPage = () => {
     const [updateToaster, setUpdateToaster] = useState(false);
     const [deleteToaster, setDeleteToaster] = useState(false);
     const [failToaster, setFailToaster] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
 
     // useRef
     const searchInputRef = useRef<HTMLInputElement>(null);
@@ -46,6 +51,9 @@ const TasksPage = () => {
     const formContainerRef = useRef<HTMLInputElement>(null);
     const successSoundRef = useRef<HTMLAudioElement | null>(null);
     const failedSoundRef = useRef<HTMLAudioElement | null>(null);
+
+    const itemsPerPage = 2;
+    const totalPages = Math.ceil(tasks.length / itemsPerPage);
 
     const clearToasters = () => {
         setCreateToaster(false);
@@ -192,8 +200,10 @@ const TasksPage = () => {
         { name: 'Title', span: 2 },
         { name: 'Due Date', span: 1 },
         { name: 'Status', span: 1 },
-        { name: 'Assigned', span: 1 },
+        { name: 'Assigned', span: 2 },
     ];
+
+    // console.log(Math.ceil(30 / 14));
 
     const toasters = [
         { condition: createToaster, title: "Tasks Created", icon: <IoCheckmarkCircle className="text-green-600 size-5" /> },
@@ -229,9 +239,9 @@ const TasksPage = () => {
                 </div>
 
                 {/* Table Start */}
-                <div className="flex items-center justify-between max-sm:flex-col max-sm:gap-2">
+                <div className="flex items-center justify-between max-md:flex-col max-md:gap-2">
                     <div
-                        className="max-sm:order-2 max-sm:w-full relative flex items-center"
+                        className="max-md:order-2 max-md:w-full relative flex items-center"
                         onClick={() => searchInputRef.current.focus()}
                     >
                         <div className="px-4 absolute h-full grid items-center pointer-events-none">
@@ -241,16 +251,18 @@ const TasksPage = () => {
                             type="search"
                             ref={searchInputRef}
                             name="searchTask"
-                            className="w-auto max-sm:w-full text-base text-black border border-gray-300 px-10 pe-4 py-2 rounded-lg focus:outline-none focus:border-blue-600"
+                            className="w-auto max-md:w-full text-base text-black border border-gray-300 px-10 pe-4 py-2 rounded-lg focus:outline-none focus:border-blue-600"
                             placeholder="Search tasks by title"
                         />
                     </div>
-                    <button
+                    <ButtonSolid
+                        title='Create task'
+                        icon={<AiOutlinePlus className="size-4" />}
                         onClick={toggleForm}
-                        className="max-sm:w-full max-sm:order-1 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white flex gap-1 items-center justify-center">
-                        <AiOutlinePlus className="size-4" />
-                        Create task
-                    </button>
+                        disabled={false}
+                        maxMdWidth={true}
+                        type="button" // Add type to ensure it’s treated as a button
+                    />
                 </div>
 
                 <div className="text-base text-black w-full">
@@ -316,8 +328,16 @@ const TasksPage = () => {
                                         </select>
                                     </div>
                                     <div className="flex items-center gap-4 justify-end">
-                                        <button onClick={toggleForm}><RxCross2 className='size-5 text-red-600 hover:text-red-400' /></button>
-                                        <button type='submit'><IoMdCheckmark className='size-5 text-green-600 hover:text-green-400' /></button>
+                                        <ButtonIconic
+                                            onClick={toggleForm}
+                                            icon={<RxCross2 className="size-5 text-red-600 hover:text-red-400" />}
+                                            type="button" // Optional but explicit; recommended for non-submit buttons
+                                        />
+
+                                        <ButtonIconic
+                                            type="submit"
+                                            icon={<IoMdCheckmark className="size-5 text-green-600 hover:text-green-400" />}
+                                        />
                                     </div>
                                 </form>
                             </div>
@@ -365,6 +385,28 @@ const TasksPage = () => {
                         )}
                     </div>
                 </div>
+                {!loader && (
+                    <div>
+                        <p>Page {currentPage} of {totalPages}</p>
+                        <ButtonSolid
+                            title=''
+                            icon={<GrPrevious />}
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            maxMdWidth={false}
+                            type="button" // Add type for clarity
+                        />
+
+                        <ButtonSolid
+                            title=''
+                            icon={<GrNext />}
+                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            maxMdWidth={false}
+                            type="button" // Ensure type is set as button
+                        />
+                    </div>
+                )}
                 {/* Table End */}
 
             </div>

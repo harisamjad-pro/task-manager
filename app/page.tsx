@@ -61,13 +61,22 @@ export default function Home() {
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
-        position: "top" as const,
+        position: "top",
       },
       title: {
         display: false,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1,
+        },
       },
     },
   };
@@ -86,54 +95,51 @@ export default function Home() {
           <Loader />
         </div>
       ) : (
-        <div className="grid gap-6 grid-cols-2">
+        <div className="grid gap-6 grid-cols-2 max-md:grid-cols-1">
           {/* Task Status Summary */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4 max-md:order-1 max-sm:grid-cols-1">
             {taskStatus.map((ts) => (
-              <div key={ts.status} className="rounded-lg border border-gray-300 px-4 py-3 grid gap-1">
+              <div key={ts.status} className="rounded-lg bg-gray-50 border border-gray-300 px-4 py-3 flex flex-col gap-1 max-sm:flex-row max-sm:items-center max-sm:justify-between">
                 <h2 className="text-base font-semibold">{ts.status} Tasks</h2>
-                <p className="text-2xl font-semibold">{ts.count}</p>
+                <p className="text-2xl font-semibold max-sm:text-xl">{ts.count}</p>
               </div>
             ))}
           </div>
 
           {/* Latest Tasks */}
-          <div className="row-span-2 rounded-lg border border-gray-300 px-4 py-3">
-            <div className="h-fit grid gap-2">
-              <h2 className="text-2xl font-semibold text-blue-600">Latest Tasks</h2>
-
-              {tasks && (
-                <div className="overflow-y-auto max-h-72">
-                  {tasks.slice(0, 3).map((task, index) => (
-                    <div
-                      key={index}
-                      className={`grid gap-1 py-3 ${index !== tasks.slice(0, 3).length - 1 && "border-b border-b-gray-300"}`}
-                    >
-                      <h3>{task.title}</h3>
-                      <div className={`w-fit px-3 py-1 rounded-full font-semibold text-sm ${task.status === "Open" && "bg-green-100 text-green-600"} ${task.status === "In Progress" && "bg-yellow-100 text-yellow-600"} ${task.status === "Closed" && "bg-purple-100 text-purple-600"}`}>
-                        <p>{task.status}</p>
+          <div className="row-span-2 rounded-lg border border-gray-300 px-4 py-3 max-md:order-3 max-md:row-span-1">
+            <div className="grid h-full gap-2 content-between">
+              <div className="grid gap-2">
+                <h2 className="text-2xl font-semibold text-blue-600">Latest Tasks</h2>
+                {tasks && (
+                  <div className="overflow-y-auto max-h-72">
+                    {tasks.slice(0, 3).map((task, index) => (
+                      <div
+                        key={index}
+                        className={`grid gap-1 py-3 ${index !== tasks.slice(0, 3).length - 1 && "border-b border-b-gray-300"}`}
+                      >
+                        <h3>{task.title}</h3>
+                        <div className={`w-fit px-3 py-1 rounded-full font-semibold text-sm ${task.status === "Open" && "bg-green-100 text-green-600"} ${task.status === "In Progress" && "bg-yellow-100 text-yellow-600"} ${task.status === "Closed" && "bg-purple-100 text-purple-600"}`}>
+                          <p>{task.status}</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
+                    ))}
+                  </div>
+                )}
+              </div>
               <Button href={"/tasks"} icon={<IoGlassesOutline className="size-5" />} title={"Manage Tasks"} />
-
             </div>
           </div>
 
           {/* Chart for Task Statuses */}
-          <div className="rounded-lg border border-gray-300 px-4 py-3 grid gap-4">
+          <div className="rounded-lg border border-gray-300 px-4 py-3 grid gap-4 max-md:order-2">
             <h2 className="text-xl font-semibold text-blue-600">Tasks Overview</h2>
-            <div className="w-full">
+            <div className="w-full h-64 relative max-md:h-80 max-sm:h-96">
               <Bar data={chartData} options={chartOptions} />
             </div>
           </div>
         </div>
       )}
-
-
     </div>
   );
 }
