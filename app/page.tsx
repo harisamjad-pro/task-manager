@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import Loader from "@/components/ui/Loader";
-import Button, { ButtonSolid } from "@/components/ui/Button";
+import { ButtonSolid } from "@/components/ui/Button";
 import { IoGlassesOutline } from "react-icons/io5";
 
 // Register Chart.js components
