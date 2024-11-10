@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { GiElectric } from "react-icons/gi";
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
+import { RiMenu3Fill } from "react-icons/ri";
+
 
 interface LinkItem {
     name: string;
@@ -38,7 +40,7 @@ const Header = () => {
                                 </Link>
                             </li>
                         ) : (
-                            <li key={link.name}>
+                            <li className='block max-sm:hidden' key={link.name}>
                                 <Link
                                     href={link.href}
                                     className={`${link.href === pathname ? "text-black" : "text-gray-500"} hover:text-black font-medium text-base`}
@@ -49,15 +51,16 @@ const Header = () => {
                         )
                     ))}
                 </ul>
-                <ul>
+                <ul className='hidden max-sm:flex'>
                     <li>
-                        <Image
+                        {/* <Image
                             src="/champ1.jpg"
                             width={32}
                             height={32}
                             alt="Haris"
                             className="rounded-full object-cover border border-blue-600"
-                        />
+                        /> */}
+                        <RiMenu3Fill className='size-6' />
                     </li>
                 </ul>
             </nav>
