@@ -312,14 +312,15 @@ const TasksPage = () => {
                                         </div>
                                         <div className="px-2">
                                             <select
-                                                value={peopleIds.length > 0 ? peopleIds[0] : ''}
+                                                value={peopleIds.length > 0 && !isNaN(peopleIds[0]) ? peopleIds[0] : ''}
                                                 onChange={(e) => {
-                                                    const selectedId = parseInt(e.target.value, 10);
-                                                    setPeopleIds([selectedId]);
+                                                    const selectedId = e.target.value ? parseInt(e.target.value, 10) : '';
+                                                    setPeopleIds(selectedId ? [selectedId] : []);
                                                 }}
                                                 className='w-full text-base text-black py-2 focus:outline-none'
                                             >
                                                 <option value="" disabled>Choose People</option>
+                                                <option value="">No Assign</option>
                                                 {people.map((person) => (
                                                     <option key={person.id} value={person.id}>
                                                         {person.name}
@@ -372,7 +373,7 @@ const TasksPage = () => {
                                 ))
                             ) : (
                                 <>
-                                    <div className='text-center px-4 py-3'>
+                                    <div className='text-center px-4 py-3 max-sm:text-left'>
                                         {loader ? (<Loader />) : (<h2 className='text-gray-600 text-base font-normal'>No data</h2>)}
                                     </div>
                                 </>

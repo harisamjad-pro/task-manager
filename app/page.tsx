@@ -89,7 +89,7 @@ export default function Home() {
   return (
     <div className="grid gap-6">
       <div className="grid gap-2">
-        <h1 className="text-3xl font-semibold">Dashboard</h1>
+        <h1 className="text-3xl font-semibold">Personal Dashboard</h1>
         <p className="text-gray-600">
           Overview of tasks and statuses for better management and insights.
         </p>
@@ -102,7 +102,7 @@ export default function Home() {
             [...Array(3)].map((_, index) => (
               <div key={index} className="grid gap-4">
                 <div className="rounded-lg bg-gray-50 border border-gray-300 px-4 py-3 flex flex-col gap-1 max-sm:flex-row max-sm:items-center max-sm:justify-between">
-                  <div className="w-full flex justify-center items-center h-16">
+                  <div className="w-full flex justify-center items-center">
                     {loader ? (<Loader />) : (<h2 className='text-gray-600 text-base font-normal'>No data</h2>)}
                   </div>
                 </div>
@@ -120,9 +120,9 @@ export default function Home() {
 
         {/* Latest Tasks */}
         <div className="row-span-2 rounded-lg border border-gray-300 px-4 py-4 max-md:order-3 max-md:row-span-1">
-          <div className="grid h-full gap-2 content-between">
+          <div className="grid gap-2 content-between h-full max-md:min-h-72">
             <div className="grid gap-2">
-              <h2 className="text-2xl font-semibold text-blue-600">Latest Tasks</h2>
+              <h2 className="text-2xl font-semibold text-blue-600">Latest Assigned Tasks</h2>
               {tasks.length !== 0 ? (
                 // className="max-h-72"
                 <div className="overflow-y-auto">
@@ -131,26 +131,30 @@ export default function Home() {
                       key={index}
                       className={`grid gap-2 py-3 ${index !== tasks.slice(0, 3).length - 1 && "border-b border-b-gray-300"}`}
                     >
-                      <h3 className="text-base">
+                      <h3 className="font-semibold">
                         {task.title.length > 56 ? `${task.title.slice(0, 56)}... ` : task.title}
                       </h3>
-                      <p className="font-semibold">{task.people?.map((p) => p.name).join(", ")}</p>
-                      <div className={`w-fit px-3 py-1 rounded-full font-semibold text-sm ${task.status === "Open" && "bg-green-100 text-green-600"} ${task.status === "In Progress" && "bg-yellow-100 text-yellow-600"} ${task.status === "Closed" && "bg-purple-100 text-purple-600"}`}>
-                        <p>{task.status}</p>
+                      <div className="flex justify-between gap-2">
+                        <div className={`w-fit px-3 py-1 rounded-full font-semibold text-sm ${task.status === "Open" && "bg-green-100 text-green-600"} ${task.status === "In Progress" && "bg-yellow-100 text-yellow-600"} ${task.status === "Closed" && "bg-purple-100 text-purple-600"}`}>
+                          <p>{task.status}</p>
+                        </div>
+                        <p className="text-gray-600">{task.people?.map((p) => p.name).join(", ")}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                loader ? (<div className='text-center max-h-72'><Loader /></div>) : (
-                  <div className="grid gap-2 py-3">
-                    <h3 className="text-base">No tasks yet</h3>
-                    <p className="font-semibold">Get the latest priority assigned tasks here</p>
-                    <div className="flex justify-center">
-                      <CiBoxList className="size-48 text-gray-300" />
+                <div className="min-h-64 max-md:min-h-72 grid items-center">
+                  {loader ? (<div className='text-center'><Loader /></div>) : (
+                    <div className="grid gap-2 py-3 max-md:text-center">
+                      <h3 className="text-base">No tasks yet</h3>
+                      <p className="font-semibold">There are latest assigned tasks</p>
+                      <div className="flex justify-center">
+                        <CiBoxList className="size-48 text-gray-300" />
+                      </div>
                     </div>
-                  </div>
-                )
+                  )}
+                </div>
               )}
             </div>
             <ButtonSolid href="/tasks" icon={<IoGlassesOutline className="size-5" />} title="Manage Tasks" disabled={false} maxMdWidth={false} type="button" />
@@ -158,10 +162,10 @@ export default function Home() {
         </div>
 
         {/* Chart for Task Statuses */}
-        <div className="rounded-lg border border-gray-300 px-4 py-4 grid gap-4 max-md:order-2">
+        <div className="h-full rounded-lg border border-gray-300 px-4 py-4 grid gap-4 max-md:order-2">
           <h2 className="text-xl font-semibold text-blue-600">Tasks Overview</h2>
           {tasks.length === 0 ? (
-            <div className='h-64 max-md:h-80 max-sm:h-96 text-center'>
+            <div className='min-h-64 max-md:h-72 text-center grid items-center'>
               {loader ? (<Loader />) : (
                 <div className="grid justify-center">
                   <h2 className='text-gray-600 text-base font-normal'>No data</h2>
@@ -170,7 +174,7 @@ export default function Home() {
               )}
             </div>
           ) : (
-            <div className="w-full h-64 relative max-md:h-80 max-sm:h-96">
+            <div className="w-full h-64 relative max-md:h-72">
               <Bar data={chartData} options={chartOptions} />
             </div>
           )}
