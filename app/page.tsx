@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import Loader from "@/components/ui/Loader";
 import { ButtonSolid } from "@/components/ui/Button";
 import { IoGlassesOutline } from "react-icons/io5";
+import { readTaskAPI } from "@/services/api/tasks";
+import { CiBoxList } from "react-icons/ci";
+import { FaChartBar } from "react-icons/fa";
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -13,7 +16,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 interface Task {
   title: string;
   status: "Open" | "In Progress" | "Closed";
-  people?: { name: string }[];  // Adding `people` field to the Task interface
+  people?: { name: string }[];
 }
 
 interface TaskStatus {
@@ -26,29 +29,27 @@ export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loader, setLoader] = useState(true);
 
+  const fetchTasks = async () => {
+    setLoader(true);
+    try {
+      const data = await readTaskAPI();
+      const statusCounts = ["Open", "In Progress", "Closed"].map((status) => ({
+        status,
+        count: data.filter((task: Task) => task.status === status).length,
+      }));
+
+      const tasksWithPeople = data.filter((task: Task) => task.people && task.people.length > 0);
+
+      setTaskStatus(statusCounts);
+      setTasks(tasksWithPeople.reverse());
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    } finally {
+      setLoader(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await fetch("/api/tasks");
-        const data = await response.json();
-
-        const statusCounts = ["Open", "In Progress", "Closed"].map((status) => ({
-          status,
-          count: data.filter((task: Task) => task.status === status).length,
-        }));
-
-        // Filter tasks to include only those with assigned people
-        const tasksWithPeople = data.filter((task: Task) => task.people && task.people.length > 0);
-
-        setTaskStatus(statusCounts);
-        setTasks(tasksWithPeople.reverse()); // Show latest first
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      } finally {
-        setLoader(false);
-      }
-    };
-
     fetchTasks();
   }, []);
 
@@ -118,12 +119,13 @@ export default function Home() {
         </div>
 
         {/* Latest Tasks */}
-        <div className="row-span-2 rounded-lg border border-gray-300 px-4 py-3 max-md:order-3 max-md:row-span-1">
+        <div className="row-span-2 rounded-lg border border-gray-300 px-4 py-4 max-md:order-3 max-md:row-span-1">
           <div className="grid h-full gap-2 content-between">
             <div className="grid gap-2">
               <h2 className="text-2xl font-semibold text-blue-600">Latest Tasks</h2>
               {tasks.length !== 0 ? (
-                <div className="overflow-y-auto max-h-72">
+                // className="max-h-72"
+                <div className="overflow-y-auto">
                   {tasks.slice(0, 3).map((task, index) => (
                     <div
                       key={index}
@@ -140,9 +142,15 @@ export default function Home() {
                   ))}
                 </div>
               ) : (
-                <div className='text-center max-h-72'>
-                  {loader ? (<Loader />) : (<h2 className='text-gray-600 text-base font-normal'>No data</h2>)}
-                </div>
+                loader ? (<div className='text-center max-h-72'><Loader /></div>) : (
+                  <div className="grid gap-2 py-3">
+                    <h3 className="text-base">No tasks yet</h3>
+                    <p className="font-semibold">Get the latest priority assigned tasks here</p>
+                    <div className="flex justify-center">
+                      <CiBoxList className="size-48 text-gray-300" />
+                    </div>
+                  </div>
+                )
               )}
             </div>
             <ButtonSolid href="/tasks" icon={<IoGlassesOutline className="size-5" />} title="Manage Tasks" disabled={false} maxMdWidth={false} type="button" />
@@ -150,11 +158,16 @@ export default function Home() {
         </div>
 
         {/* Chart for Task Statuses */}
-        <div className="rounded-lg border border-gray-300 px-4 py-3 grid gap-4 max-md:order-2">
+        <div className="rounded-lg border border-gray-300 px-4 py-4 grid gap-4 max-md:order-2">
           <h2 className="text-xl font-semibold text-blue-600">Tasks Overview</h2>
           {tasks.length === 0 ? (
             <div className='h-64 max-md:h-80 max-sm:h-96 text-center'>
-              {loader ? (<Loader />) : (<h2 className='text-gray-600 text-base font-normal'>No data</h2>)}
+              {loader ? (<Loader />) : (
+                <div className="grid justify-center">
+                  <h2 className='text-gray-600 text-base font-normal'>No data</h2>
+                  <FaChartBar className="size-48 text-gray-300" />
+                </div>
+              )}
             </div>
           ) : (
             <div className="w-full h-64 relative max-md:h-80 max-sm:h-96">

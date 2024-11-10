@@ -30,7 +30,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body className={`${interFont.variable} antialiased cursor-default`}>
         {/* font-[var(--font-inter-sans)] */}
-        <Header />
+        {/* <Header /> */}
         <main className="px-16 py-12 mt-16 max-lg:px-12 max-md:px-8 max-sm:px-4">
           {children}
         </main>

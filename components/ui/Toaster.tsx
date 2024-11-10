@@ -12,7 +12,7 @@ const Toaster = ({ title, icon }: ToasterProps) => {
     return (
         <AnimatePresence>
             <motion.div
-                className='fixed bottom-6 right-12'
+                className='z-20 fixed bottom-6 right-16  max-lg:right-12 max-md:right-8 max-sm:right-4'
                 initial={{ y: 24 }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.5 }}
