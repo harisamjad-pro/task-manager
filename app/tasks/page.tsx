@@ -275,7 +275,7 @@ const TasksPage = () => {
                                 </div>
                             ))}
                         </div>
-                        <div className="border border-t-0 border-gray-300 rounded-b-lg">
+                        <div className="bg-gray-50 border border-t-0 border-gray-300 rounded-b-lg">
                             {toggleCreateForm && (
                                 <div ref={formContainerRef}>
                                     <form onSubmit={handleSubmit} className='bg-white grid grid-cols-6 items-center px-4 py-1 border-2 border-blue-600'>
@@ -347,7 +347,7 @@ const TasksPage = () => {
                                 currentPageTasks.map((task, index) => (
                                     <div
                                         key={task.id}
-                                        className={`px-2 py-3 hover:bg-gray-50 text-gray-600 ${index !== currentPageTasks.length - 1 ? 'border-b border-gray-300' : "rounded-b-lg"} items-center grid ${gridColumnsClass}`}
+                                        className={`px-2 py-3 bg-white hover:bg-gray-50 text-gray-600 ${index !== currentPageTasks.length - 1 ? 'border-b border-gray-300' : "rounded-b-lg"} items-center grid ${gridColumnsClass}`}
                                         onMouseEnter={() => setHoveredTaskId(task.id)}
                                         onMouseLeave={() => setHoveredTaskId(null)}
                                     >

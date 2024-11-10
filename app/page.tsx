@@ -110,9 +110,9 @@ export default function Home() {
             ))
           ) : (
             taskStatus.map((ts) => (
-              <div key={ts.status} className="rounded-lg bg-gray-50 border border-gray-300 px-4 py-3 flex flex-col gap-1 max-sm:flex-row max-sm:items-center max-sm:justify-between">
+              <div key={ts.status} className={`rounded-lg ${ts.count !== 0 ? "bg-blue-50" : "text-gray-600"} bg-white text-black border border-gray-300 px-4 py-3 flex flex-col gap-1 max-sm:flex-row max-sm:items-center max-sm:justify-between`}>
                 <h2 className="text-base font-semibold">{ts.status} Tasks</h2>
-                <p className="text-2xl font-semibold max-sm:text-xl">{ts.count}</p>
+                <p className={`text-2xl font-semibold ${ts.count !== 0 && "text-blue-600"} max-sm:text-xl`}>{ts.count}</p>
               </div>
             ))
           )}
