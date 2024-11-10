@@ -45,7 +45,6 @@ const TasksPage = () => {
     const [failToaster, setFailToaster] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
-    const [result, setResult] = useState(false);
 
     // useRef
     const searchInputRef = useRef<HTMLInputElement>(null);
@@ -105,14 +104,10 @@ const TasksPage = () => {
         failedSoundRef.current = new Audio('/audio/failed.mp3');
     }, []);
 
-    const clearSounds = () => {
-        [successSoundRef, failedSoundRef].forEach(ref => ref.current?.pause() && (ref.current.currentTime = 0));
-    };
+    const clearSounds = () => [successSoundRef, failedSoundRef].forEach(ref => ref.current?.pause() && (ref.current.currentTime = 0));
 
     useEffect(() => {
-        if (toggleCreateForm && formInputRef.current) {
-            formInputRef.current.focus();
-        }
+        if (toggleCreateForm && formInputRef.current) formInputRef.current.focus();
     }, [toggleCreateForm]);
 
     useEffect(() => {
@@ -143,12 +138,7 @@ const TasksPage = () => {
         clearToasters();
         clearSounds();
 
-        const taskData = {
-            title,
-            dueDate,
-            peopleIds,
-            status,
-        };
+        const taskData = { title, dueDate, peopleIds, status, };
 
         try {
             if (updatingTaskId) {
@@ -231,12 +221,7 @@ const TasksPage = () => {
 
     const formatDueDate = (dateString: string) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString(undefined, {
-            weekday: 'short',
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
+        return date.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
     };
 
     const gridColumnsClass = `grid-cols-${headers.length + 2}`;
@@ -254,7 +239,7 @@ const TasksPage = () => {
                 <div className="flex items-center justify-between max-md:flex-col max-md:gap-2">
                     <div
                         className="max-md:order-2 max-md:w-full relative flex items-center"
-                        onClick={() => searchInputRef.current.focus()}
+                        onClick={() => searchInputRef.current && searchInputRef.current.focus()}
                     >
                         <div className="px-4 absolute h-full grid items-center pointer-events-none">
                             <IoSearchOutline className="size-5 text-gray-600" />
@@ -279,7 +264,7 @@ const TasksPage = () => {
                     />
                 </div>
 
-                <div className="text-base text-black w-full">
+                <div className="text-base text-black">
                     <div className={`px-2 py-4 grid ${gridColumnsClass} bg-blue-100 border border-gray-300 rounded-t-lg`}>
                         {headers.map((header, index) => (
                             // <div key={index} className={`px-2 font-semibold ${index === 0 && "col-span-2"}`}>
@@ -288,7 +273,6 @@ const TasksPage = () => {
                             </div>
                         ))}
                     </div>
-
                     <div className="border border-t-0 border-gray-300 rounded-b-lg">
                         {toggleCreateForm && (
                             <div ref={formContainerRef}>
@@ -387,16 +371,13 @@ const TasksPage = () => {
                         ) : (
                             <>
                                 <div className='text-center px-4 py-3'>
-                                    {loader ? (
-                                        <Loader />
-                                    ) : (
-                                        <h2 className='text-gray-600 text-base font-normal'>No data</h2>
-                                    )}
+                                    {loader ? (<Loader />) : (<h2 className='text-gray-600 text-base font-normal'>No data</h2>)}
                                 </div>
                             </>
                         )}
                     </div>
                 </div>
+
                 {!loader && (
                     <div className='flex items-center gap-4 justify-end'>
                         <p className='text-base text-gray-600'>Page {currentPage} of {totalPages}</p>

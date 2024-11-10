@@ -42,9 +42,10 @@ export default function Home() {
 
         setTaskStatus(statusCounts);
         setTasks(tasksWithPeople.reverse()); // Show latest first
-        setLoader(false);
       } catch (error) {
         console.error("Error fetching tasks:", error);
+      } finally {
+        setLoader(false);
       }
     };
 
@@ -101,7 +102,7 @@ export default function Home() {
               <div key={index} className="grid gap-4">
                 <div className="rounded-lg bg-gray-50 border border-gray-300 px-4 py-3 flex flex-col gap-1 max-sm:flex-row max-sm:items-center max-sm:justify-between">
                   <div className="w-full flex justify-center items-center h-16">
-                    <Loader />
+                    {loader ? (<Loader />) : (<h2 className='text-gray-600 text-base font-normal'>No data</h2>)}
                   </div>
                 </div>
               </div>
@@ -121,29 +122,27 @@ export default function Home() {
           <div className="grid h-full gap-2 content-between">
             <div className="grid gap-2">
               <h2 className="text-2xl font-semibold text-blue-600">Latest Tasks</h2>
-              {loader ? (
-                <div className='text-center max-h-72'>
-                  <Loader />
+              {tasks.length !== 0 ? (
+                <div className="overflow-y-auto max-h-72">
+                  {tasks.slice(0, 3).map((task, index) => (
+                    <div
+                      key={index}
+                      className={`grid gap-2 py-3 ${index !== tasks.slice(0, 3).length - 1 && "border-b border-b-gray-300"}`}
+                    >
+                      <h3 className="text-base">
+                        {task.title.length > 56 ? `${task.title.slice(0, 56)}... ` : task.title}
+                      </h3>
+                      <p className="font-semibold">{task.people?.map((p) => p.name).join(", ")}</p>
+                      <div className={`w-fit px-3 py-1 rounded-full font-semibold text-sm ${task.status === "Open" && "bg-green-100 text-green-600"} ${task.status === "In Progress" && "bg-yellow-100 text-yellow-600"} ${task.status === "Closed" && "bg-purple-100 text-purple-600"}`}>
+                        <p>{task.status}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : (
-                tasks && (
-                  <div className="overflow-y-auto max-h-72">
-                    {tasks.slice(0, 3).map((task, index) => (
-                      <div
-                        key={index}
-                        className={`grid gap-2 py-3 ${index !== tasks.slice(0, 3).length - 1 && "border-b border-b-gray-300"}`}
-                      >
-                        <h3 className="text-base">
-                          {task.title.length > 56 ? `${task.title.slice(0, 56)}... ` : task.title}
-                        </h3>
-                        <p className="font-semibold">{task.people?.map((p) => p.name).join(", ")}</p>
-                        <div className={`w-fit px-3 py-1 rounded-full font-semibold text-sm ${task.status === "Open" && "bg-green-100 text-green-600"} ${task.status === "In Progress" && "bg-yellow-100 text-yellow-600"} ${task.status === "Closed" && "bg-purple-100 text-purple-600"}`}>
-                          <p>{task.status}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )
+                <div className='text-center max-h-72'>
+                  {loader ? (<Loader />) : (<h2 className='text-gray-600 text-base font-normal'>No data</h2>)}
+                </div>
               )}
             </div>
             <ButtonSolid href="/tasks" icon={<IoGlassesOutline className="size-5" />} title="Manage Tasks" disabled={false} maxMdWidth={false} type="button" />
@@ -153,9 +152,9 @@ export default function Home() {
         {/* Chart for Task Statuses */}
         <div className="rounded-lg border border-gray-300 px-4 py-3 grid gap-4 max-md:order-2">
           <h2 className="text-xl font-semibold text-blue-600">Tasks Overview</h2>
-          {loader ? (
+          {tasks.length === 0 ? (
             <div className='h-64 max-md:h-80 max-sm:h-96 text-center'>
-              <Loader />
+              {loader ? (<Loader />) : (<h2 className='text-gray-600 text-base font-normal'>No data</h2>)}
             </div>
           ) : (
             <div className="w-full h-64 relative max-md:h-80 max-sm:h-96">
