@@ -163,7 +163,7 @@ export default function Home() {
 
         {/* Chart for Task Statuses */}
         <div className="h-full rounded-lg border border-gray-300 px-4 py-4 grid gap-4 max-md:order-2">
-          <h2 className="text-xl font-semibold text-blue-600">Tasks Overview</h2>
+          <h2 className="text-xl font-semibold text-blue-600">Assigned Tasks Overview</h2>
           {tasks.length === 0 ? (
             <div className='min-h-64 max-md:h-72 text-center grid items-center'>
               {loader ? (<Loader />) : (
