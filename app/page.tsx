@@ -33,10 +33,15 @@ export default function Home() {
     setLoader(true);
     try {
       const data = await readTaskAPI();
-      const statusCounts = ["Open", "In Progress", "Closed"].map((status) => ({
-        status,
+      // const statusCounts = ["Open", "In Progress", "Closed"].map((status) => ({
+      //   status,
+      //   count: data.filter((task: Task) => task.status === status).length,
+      // }));
+      const statusCounts: TaskStatus[] = ["Open", "In Progress", "Closed"].map((status) => ({
+        status: status as "Open" | "In Progress" | "Closed",
         count: data.filter((task: Task) => task.status === status).length,
       }));
+
 
       const tasksWithPeople = data.filter((task: Task) => task.people && task.people.length > 0);
 
