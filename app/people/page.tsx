@@ -15,7 +15,7 @@ const PeoplePage = () => {
     // useState
     const [people, setPeople] = useState<People[]>([]);
     const [name, setName] = useState('');
-    const [updatingPersonId, setUpdatingPersonId] = useState<{ id: number; name: string } | null>(null);
+    const [updatingPersonId, setUpdatingPersonId] = useState<number | null>(null);
     const [loader, setLoader] = useState(true);
     const [createToaster, setCreateToaster] = useState(false);
     const [updateToaster, setUpdateToaster] = useState(false);
