@@ -75,7 +75,7 @@ export default function Home() {
     plugins: {
       legend: {
         display: false,
-        position: "top",
+        position: "top" as const, // Use an accepted position value
       },
       title: {
         display: false,
@@ -90,6 +90,7 @@ export default function Home() {
       },
     },
   };
+
 
   return (
     <div className="grid gap-6">
