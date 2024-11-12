@@ -19,3 +19,6 @@ Manage People, Manage Tasks, Assign to people, and get notified
 
 ### Chart.js
 `npm install chart.js react-chartjs-2`
+
+### NextAuth.js
+`npm install next-auth`

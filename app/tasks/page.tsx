@@ -201,10 +201,10 @@ const TasksPage = () => {
     };
 
     const headers = [
-        { name: 'Title', span: 2 },
-        { name: 'Due Date', span: 1 },
-        { name: 'Status', span: 1 },
-        { name: 'Assigned', span: 2 },
+        { name: 'Title', span: 2, visible: true },
+        { name: 'Due Date', span: 1, visible: true },
+        { name: 'Status', span: 1, visible: true },
+        { name: 'Assigned', span: 1, visible: true },
     ];
 
     const toasters = [
@@ -224,7 +224,12 @@ const TasksPage = () => {
         return date.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
     };
 
-    const gridColumnsClass = `grid-cols-${headers.length + 2}`;
+    const visibleHeaders = headers.filter(header => header.visible);
+    const totalSpan = visibleHeaders.reduce((acc, header) => acc + header.span, 0);
+    const gridColumnsClass = `grid-cols-${totalSpan + (headers.length + 2 - totalSpan)}`;
+
+    const buttonGrids = `col-span-${headers.length - totalSpan + 2}`;
+    console.log(buttonGrids)
 
     return (
         <>
@@ -268,7 +273,7 @@ const TasksPage = () => {
                     <div className='w-full max-lg:w-[960px] max-md:w-[896px]'>
 
                         <div className={`px-2 py-4 grid ${gridColumnsClass} bg-blue-100 border border-gray-300 rounded-t-lg`}>
-                            {headers.map((header, index) => (
+                            {visibleHeaders.map((header, index) => (
                                 // <div key={index} className={`px-2 font-semibold ${index === 0 && "col-span-2"}`}>
                                 <div key={index} className={`px-2 font-semibold col-span-${header.span}`}>
                                     <p>{header.name}</p>
@@ -351,7 +356,7 @@ const TasksPage = () => {
                                         onMouseEnter={() => setHoveredTaskId(task.id)}
                                         onMouseLeave={() => setHoveredTaskId(null)}
                                     >
-                                        <div className='px-2 col-span-2'>
+                                        {/* <div className='px-2 col-span-2'>
                                             <Link href={`/tasks/${task.id}`} className='text-blue-600 hover:text-blue-500'>{task.title}</Link>
                                         </div>
                                         <div className='px-2'><p>{task.dueDate ? formatDueDate(task.dueDate) : '-'}</p></div>
@@ -362,9 +367,21 @@ const TasksPage = () => {
                                         </div>
                                         <div className='px-2'>
                                             <p>{task.people.length ? task.people.map((p) => p.name).join(', ') : "-"}</p>
-                                        </div>
+                                        </div> */}
+                                        {visibleHeaders.map((header, idx) => (
+                                            <div key={idx} className={`px-2 col-span-${header.span}`}>
+                                                {header.name === 'Title' && <Link href={`/tasks/${task.id}`} className='text-blue-600 hover:text-blue-500'>{task.title}</Link>}
+                                                {header.name === 'Due Date' && <p>{task.dueDate ? formatDueDate(task.dueDate) : '-'}</p>}
+                                                {header.name === 'Status' && (
+                                                    <div className={`w-fit px-3 py-1 rounded-full font-semibold text-sm ${task.status === "Open" ? "bg-green-100 text-green-600" : task.status === "In Progress" ? "bg-yellow-100 text-yellow-600" : "bg-purple-100 text-purple-600"}`}>
+                                                        <p>{task.status}</p>
+                                                    </div>
+                                                )}
+                                                {header.name === 'Assigned' && <p>{task.people.map((p) => p.name).join(', ') || "-"}</p>}
+                                            </div>
+                                        ))}
                                         {hoveredTaskId === task.id && (
-                                            <div className="px-2 flex items-center gap-4 justify-end">
+                                            <div className={`px-2 flex items-center gap-4 justify-end ${buttonGrids}`}>
                                                 <button onClick={() => { toggleForm(); handleUpdate(task) }}><MdEdit className='size-5 text-gray-600 hover:text-yellow-400' /></button>
                                                 <button onClick={() => handleDelete(task.id)}><MdDelete className='size-5 text-gray-600 hover:text-red-400' /></button>
                                             </div>
