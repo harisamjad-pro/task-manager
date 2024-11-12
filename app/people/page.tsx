@@ -134,6 +134,8 @@ const PeoplePage = () => {
         { condition: failToaster, title: "Operation Failed", icon: <MdCancel className="text-red-600 size-5" /> }
     ];
 
+    console.log(loader ? "hehe" : "huhu");
+
     return (
         <>
             {toasters.map((toast, index) => toast.condition && (<Toaster key={index} title={toast.title} icon={toast.icon} />))}

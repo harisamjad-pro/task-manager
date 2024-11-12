@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { GiElectric } from "react-icons/gi";
 import { usePathname } from 'next/navigation';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { RiMenu3Fill } from "react-icons/ri";
 
 
