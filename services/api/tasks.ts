@@ -1,9 +1,3 @@
-export const readTaskAPI = async () => {
-    const response = await fetch('/api/tasks');
-    if (!response.ok) throw new Error('Failed to read task');
-    return response.json();
-}
-
 export const createTaskAPI = async (taskData: {
     title: string;
     dueDate: string;
@@ -20,6 +14,12 @@ export const createTaskAPI = async (taskData: {
 
     if (!response.ok) throw new Error('Failed to create task');
 };
+
+export const readTaskAPI = async () => {
+    const response = await fetch('/api/tasks');
+    if (!response.ok) throw new Error('Failed to read task');
+    return response.json();
+}
 
 export const updateTaskAPI = async (taskData: {
     id: number;

@@ -1,7 +1,7 @@
 "use client";
 
-import Loader from '@/components/ui/Loader';
 import React, { useEffect, useRef, useState } from 'react';
+import Loader from '@/components/ui/Loader';
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -227,9 +227,7 @@ const TasksPage = () => {
     const visibleHeaders = headers.filter(header => header.visible);
     const totalSpan = visibleHeaders.reduce((acc, header) => acc + header.span, 0);
     const gridColumnsClass = `grid-cols-${totalSpan + (headers.length + 2 - totalSpan)}`;
-
     const buttonGrids = `col-span-${headers.length - totalSpan + 2}`;
-    console.log(buttonGrids)
 
     return (
         <>
@@ -274,7 +272,6 @@ const TasksPage = () => {
 
                         <div className={`px-2 py-4 grid ${gridColumnsClass} bg-blue-100 border border-gray-300 rounded-t-lg`}>
                             {visibleHeaders.map((header, index) => (
-                                // <div key={index} className={`px-2 font-semibold ${index === 0 && "col-span-2"}`}>
                                 <div key={index} className={`px-2 font-semibold col-span-${header.span}`}>
                                     <p>{header.name}</p>
                                 </div>
@@ -337,7 +334,7 @@ const TasksPage = () => {
                                             <ButtonIconic
                                                 onClick={toggleForm}
                                                 icon={<RxCross2 className="size-5 text-red-600 hover:text-red-400" />}
-                                                type="button" // Optional but explicit; recommended for non-submit buttons
+                                                type="button"
                                             />
 
                                             <ButtonIconic
@@ -356,18 +353,6 @@ const TasksPage = () => {
                                         onMouseEnter={() => setHoveredTaskId(task.id)}
                                         onMouseLeave={() => setHoveredTaskId(null)}
                                     >
-                                        {/* <div className='px-2 col-span-2'>
-                                            <Link href={`/tasks/${task.id}`} className='text-blue-600 hover:text-blue-500'>{task.title}</Link>
-                                        </div>
-                                        <div className='px-2'><p>{task.dueDate ? formatDueDate(task.dueDate) : '-'}</p></div>
-                                        <div className="px-2">
-                                            <div className={`w-fit px-3 py-1 rounded-full font-semibold text-sm ${task.status === "Open" && "bg-green-100 text-green-600"} ${task.status === "In Progress" && "bg-yellow-100 text-yellow-600"} ${task.status === "Closed" && "bg-purple-100 text-purple-600"}`}>
-                                                <p>{task.status}</p>
-                                            </div>
-                                        </div>
-                                        <div className='px-2'>
-                                            <p>{task.people.length ? task.people.map((p) => p.name).join(', ') : "-"}</p>
-                                        </div> */}
                                         {visibleHeaders.map((header, idx) => (
                                             <div key={idx} className={`px-2 col-span-${header.span}`}>
                                                 {header.name === 'Title' && <Link href={`/tasks/${task.id}`} className='text-blue-600 hover:text-blue-500'>{task.title}</Link>}
