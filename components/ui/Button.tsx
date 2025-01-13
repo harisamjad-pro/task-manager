@@ -9,9 +9,10 @@ interface SolidProps {
     maxMdWidth?: boolean;
     type?: "button" | "submit" | "reset";
     onClick?: () => void;
+    ref?: React.Ref<HTMLButtonElement>;
 }
 
-export const ButtonSolid = ({ href, icon, title, disabled = false, maxMdWidth = false, onClick, type = "button" }: SolidProps) => {
+export const ButtonSolid = ({ href, icon, title, disabled = false, maxMdWidth = false, onClick, type = "button", ref }: SolidProps) => {
     const buttonClasses = `${disabled ? "bg-gray-300 hover:bg-gray-300" : "bg-blue-600 hover:bg-blue-500"}
                            ${maxMdWidth ? "max-md:order-1 max-md:w-full" : ""}
                            px-4 py-2 rounded-lg text-white flex gap-1 items-center justify-center`;
@@ -30,6 +31,7 @@ export const ButtonSolid = ({ href, icon, title, disabled = false, maxMdWidth = 
                     disabled={disabled}
                     onClick={onClick}
                     type={type}
+                    ref={ref}
                 >
                     {icon}{title}
                 </button>

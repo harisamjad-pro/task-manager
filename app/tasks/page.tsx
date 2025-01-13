@@ -50,6 +50,7 @@ const TasksPage = () => {
     const searchInputRef = useRef<HTMLInputElement>(null);
     const formInputRef = useRef<HTMLInputElement>(null);
     const formContainerRef = useRef<HTMLInputElement>(null);
+    const toggleButtonRef = useRef<HTMLButtonElement>(null);
     const successSoundRef = useRef<HTMLAudioElement | null>(null);
     const failedSoundRef = useRef<HTMLAudioElement | null>(null);
 
@@ -112,7 +113,9 @@ const TasksPage = () => {
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (formContainerRef.current && !formContainerRef.current.contains(event.target as Node)) {
+            if (formContainerRef.current && !formContainerRef.current.contains(event.target as Node) &&
+                toggleButtonRef.current && !toggleButtonRef.current.contains(event.target as Node)
+            ) {
                 setToggleCreateForm(false);
             }
         };
@@ -261,6 +264,7 @@ const TasksPage = () => {
                         title='Create task'
                         icon={<AiOutlinePlus className="size-4" />}
                         onClick={toggleForm}
+                        ref={toggleButtonRef}
                         disabled={false}
                         maxMdWidth={true}
                         type="button"
@@ -292,6 +296,7 @@ const TasksPage = () => {
                                                 className='w-full text-base text-black py-2 focus:outline-none'
                                             />
                                         </div>
+                                        
                                         <div className="px-2">
                                             <input
                                                 type="date"
@@ -300,6 +305,7 @@ const TasksPage = () => {
                                                 className='py-2 focus:outline-none'
                                             />
                                         </div>
+
                                         <div className="px-2">
                                             <select
                                                 value={status}
@@ -312,6 +318,7 @@ const TasksPage = () => {
                                                 <option value="Closed">Closed</option>
                                             </select>
                                         </div>
+
                                         <div className="px-2">
                                             <select
                                                 value={peopleIds.length > 0 && !isNaN(peopleIds[0]) ? peopleIds[0] : ''}
@@ -330,13 +337,13 @@ const TasksPage = () => {
                                                 ))}
                                             </select>
                                         </div>
+
                                         <div className="flex items-center gap-4 justify-end">
                                             <ButtonIconic
                                                 onClick={toggleForm}
                                                 icon={<RxCross2 className="size-5 text-red-600 hover:text-red-400" />}
                                                 type="button"
                                             />
-
                                             <ButtonIconic
                                                 type="submit"
                                                 icon={<IoMdCheckmark className="size-5 text-green-600 hover:text-green-400" />}
